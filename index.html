@@ -1,0 +1,132 @@
+<Html>
+
+<head>
+	<title>Mars Rover</title>
+	<style>
+		#move {
+			background-color: yellow;
+			width: 200px;
+			height: 200px;
+
+		}
+
+		#arrow {
+			margin-left: 50px;
+			width: 100px;
+			height: 100px;
+		}
+
+		#arrow img {
+			width: 100%;
+			height: 100%;
+		}
+
+		.pos {
+			margin-left: 30px;
+		}
+
+	</style>
+</head>
+
+<body>
+	<div id="move">
+		<div id="arrow"><img src="arrow.png" alt="" /></div>
+		<div class = "pos">
+			<h3>position:(
+			<span id = "pos_x">0</span>:
+			<span id = "pos_y">0</span>
+			)
+				</h3>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	let turn = 0;
+	let state_x = 39;
+	let back = 0;
+	let pos_x = 0;
+	let pos_y = 0;
+	const rotate = (dir) => {
+		console.log("dir", dir);
+		let x = document.getElementById("arrow");
+		if(dir == 2 || dir == -2)
+		{
+			back += dir;
+		}
+		if (back == 0) {
+			if (dir == -1 || dir == 3) {
+				turn += 90;
+			}
+			else if (dir == -3 || dir == 1) {
+				turn -= 90;
+			}
+		}
+		else{
+			if (dir == -1 || dir == 3) {
+				turn -= 90;
+				back = 0;
+			}
+			else if (dir == -3 || dir == 1) {
+				turn += 90;
+				back = 0;
+			}
+		}
+		x.style.transform = "rotate(" + (turn % 360) + "deg)"
+	}
+
+	function place(id, x_pos, y_pos) {
+		var element = document.getElementById(id);
+		element.style.position = "absolute";
+		element.style.left = x_pos + 'px';
+		element.style.top = y_pos + 'px';
+	}
+
+	function update() {
+		document.addEventListener('keydown', keyPress);
+	}
+
+	function keyPress(e) {
+
+		let img = document.getElementById("arrow");
+		var deg = 90;
+		var x = e.keyCode;
+		var move = document.getElementById("move").getBoundingClientRect();
+		var left = parseInt(move.left, 10);
+		var top = parseInt(move.top, 10);
+		var dir = state_x - x;
+
+		rotate(dir)
+
+		switch (x) {
+			case 37:
+				place('move', left - 30, top);
+				console.log("left", state_x, "x==", x)
+				pos_x -= 1;
+				break;
+
+			case 39:
+				place('move', left + 30, top);
+				console.log("right", state_x, "x==", x)
+				pos_x += 1;
+				break;
+
+			case 38:
+				place('move', left, top - 30);
+				console.log("up", state_x, "x==", x)
+				pos_y -= 1;
+				break;
+
+			case 40:
+				place('move', left, top + 30);
+				console.log('down', state_x, "x==", x)
+				pos_y += 1;
+				break;
+		}
+		state_x = x;
+		document.getElementById('pos_x').innerHTML = pos_x;
+		document.getElementById('pos_y').innerHTML = pos_y;
+	}
+	update();
+</script>
+
+</Html>
